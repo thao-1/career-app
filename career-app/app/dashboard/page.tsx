@@ -3,10 +3,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { BarChart3, Briefcase, FileText, Send, TrendingUp, Users, Calendar, Target, Clock, Search } from "lucide-react"
+import { BarChart3, Briefcase, FileText, Send, TrendingUp, Users, Calendar, Target, Clock, Search, LogOut } from "lucide-react"
 import Link from "next/link"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/lib/next-auth"
+import { signOut } from "next-auth/react"
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await getServerSession(authOptions)
+  
+  if (!session) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Access Denied</CardTitle>
+            <CardDescription>You need to be signed in to view this page</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/login">
+              <Button className="w-full">Sign In</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Dashboard Header */}
@@ -14,8 +36,12 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Welcome back, Sarah!</h1>
-              <p className="text-gray-600 mt-1">Here's your job search progress</p>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Welcome back, {session.user?.name || 'User'}!
+              </h1>
+              <p className="text-gray-600 mt-1">
+                {session.user?.email}
+              </p>
             </div>
             <div className="flex space-x-4">
               <Link href="/jobs">

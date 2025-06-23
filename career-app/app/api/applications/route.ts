@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
       coverLetter: coverLetter || null,
       resumeUsed: resumeUsed || null,
       status: "pending",
+      appliedAt: new Date()
     })
 
     return NextResponse.json({

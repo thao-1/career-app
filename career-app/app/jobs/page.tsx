@@ -64,12 +64,20 @@ export default function JobSearchPage() {
 
     setLoading(true)
     try {
+      // Convert all filter values to strings for URLSearchParams
+      const stringFilters: Record<string, string> = {};
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          stringFilters[key] = String(value);
+        }
+      });
+
       const params = new URLSearchParams({
         query: searchQuery,
-        location: location,
+        location: location || '',
         page: page.toString(),
-        ...filters,
-      })
+        ...stringFilters,
+      });
 
       const response = await fetch(`/api/jobs/search?${params}`)
       const data = await response.json()
