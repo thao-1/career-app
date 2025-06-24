@@ -144,43 +144,67 @@ class CareerHackPopup {
         }
       }
     })
+    
     // Site toggles
-    document.querySelectorAll(".site-toggle").forEach((toggle) => {
-      toggle.addEventListener("click", (e) => {
-        const site = e.target.dataset.site
-        this.toggleSite(site)
+    const siteToggles = document.querySelectorAll(".site-toggle")
+    if (siteToggles.length > 0) {
+      siteToggles.forEach((toggle) => {
+        toggle.addEventListener("click", (e) => {
+          const site = e.target.dataset.site
+          this.toggleSite(site)
+        })
       })
-    })
+    }
 
     // Main action buttons
-    document.getElementById("fillFormBtn").addEventListener("click", () => {
-      this.fillForm()
-    })
+    const fillFormBtn = document.getElementById("fillFormBtn")
+    if (fillFormBtn) {
+      fillFormBtn.addEventListener("click", () => this.fillForm())
+    }
 
-    document.getElementById("previewBtn").addEventListener("click", () => {
-      this.previewForm()
-    })
+    const previewBtn = document.getElementById("previewBtn")
+    if (previewBtn) {
+      previewBtn.addEventListener("click", () => this.previewForm())
+    }
 
-    document.getElementById("historyBtn").addEventListener("click", () => {
-      this.openHistory()
-    })
+    const historyBtn = document.getElementById("historyBtn")
+    if (historyBtn) {
+      historyBtn.addEventListener("click", () => this.openHistory())
+    }
 
-    document.getElementById("settingsBtn").addEventListener("click", () => {
-      this.openSettings()
-    })
+    const settingsBtn = document.getElementById("settingsBtn")
+    if (settingsBtn) {
+      settingsBtn.addEventListener("click", () => this.openSettings())
+    }
 
     // Footer links
-    document.getElementById("helpLink").addEventListener("click", () => {
-      chrome.tabs.create({ url: "https://careerhack.com/help" })
-    })
+    const helpLink = document.getElementById("helpLink")
+    if (helpLink) {
+      helpLink.addEventListener("click", () => {
+        chrome.tabs.create({ url: "https://github.com/yourusername/careerhack#readme" })
+      })
+    }
 
-    document.getElementById("aboutLink").addEventListener("click", () => {
-      chrome.tabs.create({ url: "https://careerhack.com/about" })
-    })
+    const aboutLink = document.getElementById("aboutLink")
+    if (aboutLink) {
+      aboutLink.addEventListener("click", () => {
+        chrome.tabs.create({ url: "https://careerhack.com/about" })
+      })
+    }
 
-    document.getElementById("feedbackLink").addEventListener("click", () => {
-      chrome.tabs.create({ url: "https://careerhack.com/feedback" })
-    })
+    const privacyLink = document.getElementById("privacyLink")
+    if (privacyLink) {
+      privacyLink.addEventListener("click", () => {
+        chrome.tabs.create({ url: "https://github.com/yourusername/careerhack/privacy" })
+      })
+    }
+
+    const feedbackLink = document.getElementById("feedbackLink")
+    if (feedbackLink) {
+      feedbackLink.addEventListener("click", () => {
+        chrome.tabs.create({ url: "https://careerhack.com/feedback" })
+      })
+    }
   }
 
   updateUI() {
