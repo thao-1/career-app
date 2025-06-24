@@ -4,10 +4,7 @@ const nextConfig = {
     // Ensure these environment variables are available to the browser
     NEXT_PUBLIC_NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   },
-  // Required for NextAuth.js
-  experimental: {
-    serverActions: true,
-  },
+  // Server Actions are enabled by default in Next.js 14+
   // Enable server components
   reactStrictMode: true,
   // Configure page extensions

@@ -49,6 +49,13 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
     }),
   ],
   session: {
@@ -84,7 +91,7 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-// Export the NextAuth API handlers and utilities
-const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth(authOptions);
+// Initialize NextAuth
+export const auth = NextAuth(authOptions);
 
-export { GET, POST, auth, signIn, signOut };
+export const { signIn, signOut } = auth;
