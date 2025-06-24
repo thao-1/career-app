@@ -145,16 +145,28 @@ class CareerHackPopup {
       }
     })
     
-    // Site toggles
-    const siteToggles = document.querySelectorAll(".site-toggle")
-    if (siteToggles.length > 0) {
-      siteToggles.forEach((toggle) => {
-        toggle.addEventListener("click", (e) => {
-          const site = e.target.dataset.site
+    // Site toggles - using event delegation for dynamically added elements
+    const siteContainer = document.querySelector('.site-status')
+    if (siteContainer) {
+      siteContainer.addEventListener('click', (e) => {
+        const toggle = e.target.closest('.site-toggle')
+        if (toggle) {
+          const site = toggle.dataset.site
           this.toggleSite(site)
-        })
+        }
       })
     }
+
+    // Checkbox toggles
+    const toggleSwitches = document.querySelectorAll('.toggle-switch input[type="checkbox"]')
+    toggleSwitches.forEach(checkbox => {
+      checkbox.addEventListener('change', (e) => {
+        const site = e.target.dataset.site
+        if (site) {
+          this.toggleSite(site, e.target.checked)
+        }
+      })
+    })
 
     // Main action buttons
     const fillFormBtn = document.getElementById("fillFormBtn")
@@ -167,42 +179,36 @@ class CareerHackPopup {
       previewBtn.addEventListener("click", () => this.previewForm())
     }
 
-    const historyBtn = document.getElementById("historyBtn")
-    if (historyBtn) {
-      historyBtn.addEventListener("click", () => this.openHistory())
-    }
-
-    const settingsBtn = document.getElementById("settingsBtn")
-    if (settingsBtn) {
-      settingsBtn.addEventListener("click", () => this.openSettings())
-    }
-
     // Footer links
     const helpLink = document.getElementById("helpLink")
     if (helpLink) {
-      helpLink.addEventListener("click", () => {
+      helpLink.addEventListener("click", (e) => {
+        e.preventDefault()
         chrome.tabs.create({ url: "https://github.com/yourusername/careerhack#readme" })
       })
     }
 
     const aboutLink = document.getElementById("aboutLink")
     if (aboutLink) {
-      aboutLink.addEventListener("click", () => {
+      aboutLink.addEventListener("click", (e) => {
+        e.preventDefault()
         chrome.tabs.create({ url: "https://careerhack.com/about" })
-      })
-    }
-
-    const privacyLink = document.getElementById("privacyLink")
-    if (privacyLink) {
-      privacyLink.addEventListener("click", () => {
-        chrome.tabs.create({ url: "https://github.com/yourusername/careerhack/privacy" })
       })
     }
 
     const feedbackLink = document.getElementById("feedbackLink")
     if (feedbackLink) {
-      feedbackLink.addEventListener("click", () => {
+      feedbackLink.addEventListener("click", (e) => {
+        e.preventDefault()
         chrome.tabs.create({ url: "https://careerhack.com/feedback" })
+      })
+    }
+
+    const privacyLink = document.getElementById("privacyLink")
+    if (privacyLink) {
+      privacyLink.addEventListener("click", (e) => {
+        e.preventDefault()
+        chrome.tabs.create({ url: "https://github.com/yourusername/careerhack/privacy" })
       })
     }
   }
