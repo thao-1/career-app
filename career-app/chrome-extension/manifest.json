@@ -3,8 +3,15 @@
   "name": "CareerHack - Smart Job Application Assistant",
   "version": "1.0.0",
   "description": "Intelligently auto-fill job application forms across LinkedIn, Indeed, Glassdoor, and ZipRecruiter with full user control.",
-  "permissions": ["storage", "activeTab", "scripting", "tabs", "notifications"],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs",
+    "notifications"
+  ],
   "host_permissions": [
+    "<all_urls>",
     "https://www.linkedin.com/*",
     "https://indeed.com/*",
     "https://www.indeed.com/*",

@@ -10,10 +10,42 @@ class CareerHackPopup {
 
   async init() {
     await this.loadData()
+    
+    // Check if profile is complete
+    if (!this.isProfileComplete()) {
+      this.showProfileIncompleteUI()
+      return
+    }
+    
+    // If profile is complete, continue with normal flow
     await this.detectCurrentSite()
     this.bindEvents()
     this.updateUI()
     this.checkFormDetection()
+  }
+  
+  isProfileComplete() {
+    return this.profile && 
+           this.profile.firstName && 
+           this.profile.lastName && 
+           this.profile.email
+  }
+  
+  showProfileIncompleteUI() {
+    const container = document.getElementById('mainContent')
+    container.innerHTML = `
+      <div class="profile-incomplete">
+        <h3>Profile Incomplete</h3>
+        <p>Please complete your profile to start using CareerHack</p>
+        <button id="completeProfileBtn" class="button primary">
+          Complete Profile
+        </button>
+      </div>
+    `
+    
+    document.getElementById('completeProfileBtn').addEventListener('click', () => {
+      chrome.runtime.openOptionsPage()
+    })
   }
 
   async loadData() {
@@ -102,6 +134,16 @@ class CareerHackPopup {
   }
 
   bindEvents() {
+    // Add event listener for options page updates
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+      if (namespace === 'local' && changes.profile) {
+        this.profile = changes.profile.newValue
+        if (this.isProfileComplete()) {
+          // Reload the popup to show the main UI
+          window.location.reload()
+        }
+      }
+    })
     // Site toggles
     document.querySelectorAll(".site-toggle").forEach((toggle) => {
       toggle.addEventListener("click", (e) => {

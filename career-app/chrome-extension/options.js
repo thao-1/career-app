@@ -158,20 +158,49 @@ class CareerHackOptions {
 
   async saveSettings() {
     try {
+      console.log('Saving settings...')
       const profile = this.getProfileData()
       const settings = this.getSettingsData()
 
+      console.log('Profile data:', profile)
+      console.log('Settings data:', settings)
+
       // Add resume data if uploaded
       if (this.tempResumeData) {
+        console.log('Including resume data')
         profile.resume = this.tempResumeData
         profile.resumeFileName = this.tempResumeData.fileName
       }
 
+      // Validate required fields
+      if (!profile.firstName || !profile.lastName || !profile.email) {
+        throw new Error('Please fill in all required fields (First Name, Last Name, and Email)')
+      }
+
+      // Save to storage
       await chrome.storage.local.set({ profile, settings })
-      this.showMessage("Settings saved successfully!", "success")
+      
+      // Verify the save
+      const result = await chrome.storage.local.get(['profile', 'settings'])
+      console.log('Saved data verification:', result)
+      
+      this.showMessage("Profile saved successfully! Redirecting to job search...", "success")
+      console.log('Settings saved successfully')
+      
+      // Redirect to job search after a short delay
+      setTimeout(() => {
+        // Close the options page
+        window.close()
+        
+        // Open the job search page in a new tab
+        chrome.tabs.create({
+          url: 'https://www.linkedin.com/jobs/' // Change this to your preferred job search URL
+        })
+      }, 1500)
     } catch (error) {
       console.error("Error saving settings:", error)
-      this.showMessage("Error saving settings", "error")
+      const errorMessage = error.message || 'An unknown error occurred while saving settings'
+      this.showMessage(errorMessage, "error")
     }
   }
 
@@ -228,13 +257,42 @@ class CareerHackOptions {
   }
 
   showMessage(message, type) {
-    const messageEl = document.getElementById("statusMessage")
+    console.log(`[${type.toUpperCase()}] ${message}`)
+    let messageEl = document.getElementById("statusMessage")
+    
+    // Create message element if it doesn't exist
+    if (!messageEl) {
+      messageEl = document.createElement('div')
+      messageEl.id = 'statusMessage'
+      messageEl.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 5px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        transition: opacity 0.3s ease-in-out;
+        max-width: 300px;
+      `
+      document.body.appendChild(messageEl)
+    }
+    
+    // Set message and style based on type
     messageEl.textContent = message
-    messageEl.className = `status-message ${type}`
-    messageEl.style.display = "block"
-
-    setTimeout(() => {
-      messageEl.style.display = "none"
+    messageEl.style.backgroundColor = type === 'error' ? '#ff4444' : '#4CAF50'
+    messageEl.style.display = 'block'
+    messageEl.style.opacity = '1'
+    
+    // Auto-hide after 5 seconds
+    clearTimeout(this.messageTimeout)
+    this.messageTimeout = setTimeout(() => {
+      messageEl.style.opacity = '0'
+      setTimeout(() => {
+        messageEl.style.display = 'none'
+      }, 300)
     }, 5000)
   }
 }

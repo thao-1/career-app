@@ -5,6 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CareerHack Assistant</title>
   <style>
+    /* Profile Incomplete State */
+    .profile-incomplete {
+      text-align: center;
+      padding: 30px 20px;
+      color: #333;
+    }
+    
+    .profile-incomplete h3 {
+      margin-bottom: 15px;
+      color: #e67e22;
+    }
+    
+    .profile-incomplete p {
+      margin-bottom: 20px;
+      color: #666;
+    }
+    
+    .profile-incomplete .button {
+      margin: 0 auto;
+    }
+    
     * {
       margin: 0;
       padding: 0;
@@ -317,29 +338,67 @@
       </div>
     </div>
 
-    <!-- Main Actions -->
-    <div id="mainActions">
-      <button id="fillFormBtn" class="button primary" disabled>
-        <span>📝</span>
-        Fill Application Form
-      </button>
-      
-      <div class="quick-actions">
-        <button id="previewBtn" class="button secondary" disabled>
-          <span>👁️</span>
-          Preview
-        </button>
-        <button id="historyBtn" class="button secondary">
-          <span>📊</span>
-          History
-        </button>
+    <!-- Site Selection -->
+    <div class="site-selection">
+      <div class="section-title">
+        <span>💼</span> Supported Job Sites
       </div>
+      <div class="sites-grid">
+        <div class="site-card" data-site="linkedin">
+          <div class="site-logo linkedin">
+            <span>in</span>
+          </div>
+          <div class="site-name">LinkedIn</div>
+          <label class="toggle-switch">
+            <input type="checkbox" class="site-toggle" data-site="linkedin" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="site-card" data-site="indeed">
+          <div class="site-logo indeed">
+            <span>i</span>
+          </div>
+          <div class="site-name">Indeed</div>
+          <label class="toggle-switch">
+            <input type="checkbox" class="site-toggle" data-site="indeed" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="site-card" data-site="glassdoor">
+          <div class="site-logo glassdoor">
+            <span>G</span>
+          </div>
+          <div class="site-name">Glassdoor</div>
+          <label class="toggle-switch">
+            <input type="checkbox" class="site-toggle" data-site="glassdoor" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="site-card" data-site="ziprecruiter">
+          <div class="site-logo ziprecruiter">
+            <span>ZR</span>
+          </div>
+          <div class="site-name">ZipRecruiter</div>
+          <label class="toggle-switch">
+            <input type="checkbox" class="site-toggle" data-site="ziprecruiter" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
 
-      <button id="settingsBtn" class="button secondary">
-        <span>⚙️</span>
-        Profile Settings
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button id="previewBtn" class="button secondary">
+        <span>👁️</span> Preview Application
+      </button>
+      <button id="fillFormBtn" class="button primary">
+        <span>🚀</span> Auto-fill Application
       </button>
     </div>
+
+    <!-- Status Message -->
+    <div id="statusMessage" class="status-message" style="display: none;"></div>
   </div>
 
   <div class="footer">
