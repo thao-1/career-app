@@ -232,21 +232,29 @@ class CareerHackBackground {
   }
 
   showWelcomeNotification() {
-    chrome.notifications.create({
-      type: "basic",
-      iconUrl: "icons/icon48.png",
-      title: "Welcome to CareerHack!",
-      message: "Your smart job application assistant is ready. Set up your profile to get started.",
-    })
+    try {
+      chrome.notifications.create({
+        type: "basic",
+        iconUrl: chrome.runtime.getURL("chromeicon.png"),
+        title: "Welcome to CareerHack!",
+        message: "Your smart job application assistant is ready. Set up your profile to get started.",
+      })
+    } catch (error) {
+      console.log("Could not show welcome notification:", error)
+    }
   }
 
   showUpdateNotification() {
-    chrome.notifications.create({
-      type: "basic",
-      iconUrl: "icons/icon48.png",
-      title: "CareerHack Updated",
-      message: "CareerHack has been updated with new features and improvements.",
-    })
+    try {
+      chrome.notifications.create({
+        type: "basic",
+        iconUrl: chrome.runtime.getURL("chromeicon.png"),
+        title: "CareerHack Updated!",
+        message: "Thank you for updating to the latest version of CareerHack.",
+      })
+    } catch (error) {
+      console.log("Could not show update notification:", error)
+    }
   }
 }
 
