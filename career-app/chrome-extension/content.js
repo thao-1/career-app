@@ -849,23 +849,184 @@ class BaseFormHandler {
 
 // LinkedIn-specific form handler
 class LinkedInFormHandler extends BaseFormHandler {
+  constructor() {
+    super();
+    // LinkedIn-specific field mappings
+    this.fieldMappings = {
+      // Personal Info
+      'first-name': 'firstName',
+      'last-name': 'lastName',
+      'email': 'email',
+      'phone': 'phone',
+      'address': 'address',
+      'city': 'city',
+      'state': 'state',
+      'zip': 'zipCode',
+      'country': 'country',
+      // Work Experience
+      'company': 'experience.0.company',
+      'title': 'experience.0.title',
+      'date-started': 'experience.0.startDate',
+      'date-ended': 'experience.0.endDate',
+      'description': 'experience.0.description',
+      // Education
+      'school': 'education.0.institution',
+      'degree': 'education.0.degree',
+      'field-of-study': 'education.0.fieldOfStudy',
+      'education-start-date': 'education.0.startDate',
+      'education-end-date': 'education.0.endDate',
+      // Additional Info
+      'resume': 'resume',
+      'cover-letter': 'coverLetter',
+      'portfolio': 'portfolio',
+      'linkedin': 'linkedin',
+      'github': 'github',
+      'website': 'website',
+      'salary': 'salary',
+      'notice-period': 'noticePeriod',
+      'visa-sponsorship': 'visaSponsorship',
+      'relocation': 'relocation',
+    };
+  }
+
   isJobApplicationForm(form) {
+    // Check for LinkedIn's job application form selectors
     return (
-      form.querySelector('[data-test-modal="jobs-apply-modal"]') ||
-      form.querySelector(".jobs-apply-form") ||
-      form.closest(".jobs-apply-modal")
-    )
+      form.matches('[data-test-modal="jobs-apply-modal"], .jobs-apply-form, form[action*="apply"]') ||
+      form.closest('.jobs-apply-modal, [data-test-modal="jobs-apply-modal"], .jobs-apply-form') !== null ||
+      window.location.href.includes('linkedin.com/jobs/apply/')
+    );
+  }
+
+  async fillForm(profile, settings = {}) {
+    try {
+      console.log('Starting LinkedIn form fill with profile:', profile);
+      
+      // Wait for any dynamic content to load
+      await this.delay(1000);
+      
+      // Handle LinkedIn's multi-step forms
+      const forms = document.querySelectorAll('form, .jobs-easy-apply-form, [data-test-job-apply-form]');
+      console.log(`Found ${forms.length} potential form elements on page`);
+      
+      let filledAnyField = false;
+      
+      for (const form of forms) {
+        if (this.isJobApplicationForm(form)) {
+          console.log('Processing LinkedIn application form:', form);
+          const filled = await this.fillLinkedInForm(form, profile, settings);
+          if (filled) filledAnyField = true;
+        }
+      }
+      
+      if (!filledAnyField) {
+        console.warn('No LinkedIn application forms were filled. The form might be using a different structure.');
+        // Fallback to generic form filling
+        return await super.fillForm(profile, settings);
+      }
+      
+      return { success: true, message: 'Form filled successfully' };
+    } catch (error) {
+      console.error('Error filling LinkedIn form:', error);
+      return { success: false, error: error.message };
+    }
+  }
+  
+  async fillLinkedInForm(form, profile, settings) {
+    let filledAnyField = false;
+    
+    // Handle LinkedIn's form fields
+    const inputs = form.querySelectorAll('input, textarea, select');
+    console.log(`Found ${inputs.length} input fields to process`);
+    
+    for (const input of inputs) {
+      try {
+        const fieldName = this.identifyLinkedInField(input);
+        if (!fieldName) continue;
+        
+        const value = this.getProfileValue(profile, fieldName);
+        if (!value) continue;
+        
+        console.log(`Filling field ${fieldName} with value:`, value);
+        await this.fillField(input, value, settings);
+        filledAnyField = true;
+        
+        // Trigger change events
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        
+        // Small delay between fields to mimic human behavior
+        await this.delay(settings.fillDelay || 100);
+      } catch (error) {
+        console.warn(`Error filling field ${input.name || input.id}:`, error);
+      }
+    }
+    
+    return filledAnyField;
+  }
+  
+  identifyLinkedInField(input) {
+    // Check by name, id, label, etc.
+    const name = (input.name || '').toLowerCase();
+    const id = (input.id || '').toLowerCase();
+    const placeholder = (input.placeholder || '').toLowerCase();
+    const label = this.getFieldLabel(input);
+    
+    // Check direct mappings first
+    for (const [key, value] of Object.entries(this.fieldMappings)) {
+      if (name.includes(key) || id.includes(key) || 
+          placeholder.includes(key) || (label && label.toLowerCase().includes(key))) {
+        return value;
+      }
+    }
+    
+    // Fallback to generic field identification
+    return this.identifyField(input);
+  }
+  
+  getProfileValue(profile, path) {
+    // Handle nested properties (e.g., 'experience.0.company')
+    return path.split('.').reduce((obj, key) => {
+      if (key.match(/^\d+$/)) {
+        // Handle array indices
+        const index = parseInt(key, 10);
+        return obj && obj[index] !== undefined ? obj[index] : null;
+      }
+      return obj && obj[key] !== undefined ? obj[key] : null;
+    }, profile);
   }
 
   getJobDetails() {
-    const titleEl = document.querySelector(".jobs-unified-top-card__job-title")
-    const companyEl = document.querySelector(".jobs-unified-top-card__company-name")
-    const locationEl = document.querySelector(".jobs-unified-top-card__bullet")
+    try {
+      const titleEl = document.querySelector('.jobs-unified-top-card__job-title, .job-details-jobs-unified-top-card__job-title');
+      const companyEl = document.querySelector('.jobs-unified-top-card__company-name, .job-details-jobs-unified-top-card__company-name');
+      const locationEl = document.querySelector('.jobs-unified-top-card__bullet, .job-details-jobs-unified-top-card__bullet');
+      
+      // Get job description
+      let description = '';
+      const descriptionEl = document.querySelector('.jobs-description, .jobs-description-content__text');
+      if (descriptionEl) {
+        description = descriptionEl.textContent.trim();
+      }
 
-    return {
-      title: titleEl?.textContent?.trim() || "Unknown",
-      company: companyEl?.textContent?.trim() || "Unknown",
-      location: locationEl?.textContent?.trim() || "Unknown",
+      return {
+        title: titleEl?.textContent?.trim() || 'Unknown',
+        company: companyEl?.textContent?.trim() || 'Unknown',
+        location: locationEl?.textContent?.trim() || 'Unknown',
+        description: description,
+        url: window.location.href,
+        date: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error('Error getting job details:', error);
+      return {
+        title: 'Unknown',
+        company: 'Unknown',
+        location: 'Unknown',
+        description: '',
+        url: window.location.href,
+        date: new Date().toISOString()
+      };
     }
   }
 }

@@ -1,6 +1,10 @@
+// Import config
+const CONFIG = window.CONFIG || {};
+
 class CareerHackBackground {
   constructor() {
-    this.init()
+    this.apiKey = CONFIG.JSEARCH_API_KEY;
+    this.init();
   }
 
   init() {
@@ -75,6 +79,9 @@ class CareerHackBackground {
   async handleMessage(message, sender, sendResponse) {
     try {
       switch (message.action) {
+        case "getApiKey":
+          sendResponse({ apiKey: this.apiKey });
+          return true;
         case "openSettings":
           chrome.runtime.openOptionsPage()
           sendResponse({ success: true })

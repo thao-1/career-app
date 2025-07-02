@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:extension": "node scripts/build-extension.js",
     "start": "next start",
     "lint": "next lint"
   },
@@ -30,6 +31,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "dotenv": "^16.4.5",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.19.1",
     "@types/react": "^18.3.23",
