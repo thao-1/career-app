@@ -1,7 +1,6 @@
 import { SiteLayout } from '@/components/site-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Mail, MapPin, Phone, Send } from 'lucide-react';
 
 export default function ContactPage() {
@@ -75,11 +74,11 @@ export default function ContactPage() {
                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
                       Message
                     </label>
-                    <Textarea 
-                      id="message" 
-                      rows={5} 
+                    <textarea
+                      id="message"
+                      rows={5}
                       placeholder="Your message here..."
-                      className="resize-none"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
                     />
                   </div>
                   

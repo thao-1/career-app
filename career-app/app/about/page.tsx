@@ -1,31 +1,8 @@
 import { SiteLayout } from '@/components/site-layout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Target, Lightbulb, Heart } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Target, Lightbulb, Heart } from 'lucide-react';
 
 export default function AboutPage() {
-  const team = [
-    {
-      name: "Alex Johnson",
-      role: "CEO & Founder",
-      bio: "Former tech recruiter with a passion for making hiring more efficient."
-    },
-    {
-      name: "Sam Lee",
-      role: "CTO",
-      bio: "Full-stack developer with 10+ years of experience in building scalable applications."
-    },
-    {
-      name: "Jordan Smith",
-      role: "Lead Designer",
-      bio: "UI/UX expert focused on creating intuitive and beautiful user experiences."
-    },
-    {
-      name: "Taylor Chen",
-      role: "Growth Marketer",
-      bio: "Data-driven marketer helping job seekers find the right opportunities."
-    }
-  ];
-
   const stats = [
     { value: "10,000+", label: "Active Users" },
     { value: "50,000+", label: "Jobs Posted" },
@@ -90,26 +67,6 @@ export default function AboutPage() {
                   Your success is our success. We build with your needs at the forefront.
                 </CardContent>
               </Card>
-            </div>
-          </div>
-
-          <div className="mb-20">
-            <h2 className="text-2xl font-semibold text-center mb-12">Our Team</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {team.map((member, index) => (
-                <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
-                  <div className="w-24 h-24 bg-yellow-100 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold text-yellow-600">
-                    {member.name.split(' ').map(n => n[0]).join('')}
-                  </div>
-                  <CardHeader className="p-0 mb-2">
-                    <CardTitle>{member.name}</CardTitle>
-                    <p className="text-yellow-600">{member.role}</p>
-                  </CardHeader>
-                  <CardContent className="p-0 text-gray-600">
-                    {member.bio}
-                  </CardContent>
-                </Card>
-              ))}
             </div>
           </div>
 
